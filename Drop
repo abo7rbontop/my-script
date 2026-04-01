@@ -1,0 +1,245 @@
+script.lua
+--// ULTRA PRO FLOAT FINAL 🔥 (SAVE POSITION FIXED) مع Key
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UIS = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local hrp = char:WaitForChild("HumanoidRootPart")
+
+--========================
+-- 🔐 مفاتيح لكل شخص
+--========================
+local KEY_DURATION = 86400 -- يوم كامل بالثواني
+local keysData = {
+    ["3mk1965"] = "Key2241m2",
+    ["rigAeQy"] = "Key2241m3",
+}
+
+local PLAYER_KEY = keysData[player.Name]
+
+if not PLAYER_KEY then
+    warn("❌ لا يوجد Key مخصص لك: "..player.Name)
+    return
+end
+
+getgenv().KEY_DATA = getgenv().KEY_DATA or {
+	Key = nil,
+	Time = 0
+}
+
+local function isValid()
+	return getgenv().KEY_DATA.Key == PLAYER_KEY
+		and (tick() - getgenv().KEY_DATA.Time <= KEY_DURATION)
+end
+
+--========================
+-- 🔑 GUI إدخال المفتاح
+--========================
+if not isValid() then
+	local guiKey = Instance.new("ScreenGui", game.CoreGui)
+	guiKey.Name = "KeySystem"
+
+	local frameKey = Instance.new("Frame", guiKey)
+	frameKey.Size = UDim2.new(0, 300, 0, 180)
+	frameKey.Position = UDim2.new(0.5,-150,0.5,-90)
+	frameKey.BackgroundColor3 = Color3.fromRGB(15,15,20)
+	frameKey.Active = true
+	frameKey.Draggable = true
+	Instance.new("UICorner", frameKey)
+
+	local titleKey = Instance.new("TextLabel", frameKey)
+	titleKey.Size = UDim2.new(1,0,0,40)
+	titleKey.Text = "🔐 Enter Your Key"
+	titleKey.BackgroundTransparency = 1
+	titleKey.TextColor3 = Color3.new(1,1,1)
+	titleKey.Font = Enum.Font.GothamBold
+	titleKey.TextScaled = true
+
+	local boxKey = Instance.new("TextBox", frameKey)
+	boxKey.Size = UDim2.new(0.8,0,0,40)
+	boxKey.Position = UDim2.new(0.1,0,0.35,0)
+	boxKey.PlaceholderText = "Your personal key..."
+	boxKey.BackgroundColor3 = Color3.fromRGB(25,25,30)
+	boxKey.TextColor3 = Color3.new(1,1,1)
+	boxKey.Font = Enum.Font.Gotham
+	boxKey.TextScaled = true
+	Instance.new("UICorner", boxKey)
+
+	local btnKey = Instance.new("TextButton", frameKey)
+	btnKey.Size = UDim2.new(0.8,0,0,40)
+	btnKey.Position = UDim2.new(0.1,0,0.65,0)
+	btnKey.Text = "VERIFY"
+	btnKey.BackgroundColor3 = Color3.fromRGB(35,35,45)
+	btnKey.TextColor3 = Color3.new(1,1,1)
+	btnKey.Font = Enum.Font.GothamBold
+	btnKey.TextScaled = true
+	Instance.new("UICorner", btnKey)
+
+	local statusKey = Instance.new("TextLabel", frameKey)
+	statusKey.Size = UDim2.new(1,0,0,25)
+	statusKey.Position = UDim2.new(0,0,1,-25)
+	statusKey.BackgroundTransparency = 1
+	statusKey.TextColor3 = Color3.fromRGB(255,80,80)
+	statusKey.Font = Enum.Font.Gotham
+	statusKey.TextScaled = true
+
+	btnKey.MouseButton1Click:Connect(function()
+		if boxKey.Text == PLAYER_KEY then
+			getgenv().KEY_DATA.Key = boxKey.Text
+			getgenv().KEY_DATA.Time = tick()
+			guiKey:Destroy()
+		else
+			statusKey.Text = "❌ Wrong Key"
+		end
+	end)
+
+	local checkKey = RunService.RenderStepped:Connect(function()
+		if isValid() then
+			checkKey:Disconnect()
+			if guiKey then guiKey:Destroy() end
+		end
+	end)
+	repeat task.wait() until isValid()
+end
+
+--========================
+-- 💎 GUI UltraFloatFinal الأصلي
+--========================
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "UltraFloatFinal"
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 330, 0, 280)
+
+-- تحميل المكان (Scale + Offset)
+local posX = player:GetAttribute("GUI_POS_X") or 0.5
+local posY = player:GetAttribute("GUI_POS_Y") or 0.5
+local offX = player:GetAttribute("GUI_POS_OFFX") or -165
+local offY = player:GetAttribute("GUI_POS_OFFY") or 0
+frame.Position = UDim2.new(posX, offX, posY, offY)
+
+frame.BackgroundColor3 = Color3.fromRGB(14,14,18)
+frame.Active = true
+frame.Draggable = true
+frame.ClipsDescendants = true
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0,18)
+
+local stroke = Instance.new("UIStroke", frame)
+stroke.Color = Color3.fromRGB(150, 0, 255)
+stroke.Thickness = 2
+
+-- Title
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1,0,0,44)
+title.Text = "Drop Only 🔥"
+title.BackgroundTransparency = 1
+title.TextColor3 = Color3.fromRGB(220,220,255)
+title.Font = Enum.Font.GothamBold
+title.TextScaled = true
+
+-- زر DROP
+local dropBtn = Instance.new("TextButton", frame)
+dropBtn.Size = UDim2.new(0.85,0,0,50)
+dropBtn.Position = UDim2.new(0.075,0,0.25,0)
+dropBtn.Text = "⬇️ DROP (F)"
+dropBtn.BackgroundColor3 = Color3.fromRGB(25,25,30)
+dropBtn.TextColor3 = Color3.new(1,1,1)
+dropBtn.Font = Enum.Font.GothamSemibold
+dropBtn.TextScaled = true
+Instance.new("UICorner", dropBtn)
+
+-- LINE
+local line = Instance.new("Frame", frame)
+line.Size = UDim2.new(0.9,0,0,2)
+line.Position = UDim2.new(0.05,0,0.5,0)
+line.BackgroundColor3 = Color3.fromRGB(120,120,140)
+line.BorderSizePixel = 0
+
+-- + -
+local minusBtn = Instance.new("TextButton", frame)
+minusBtn.Size = UDim2.new(0.2,0,0,40)
+minusBtn.Position = UDim2.new(0.1,0,0.65,0)
+minusBtn.Text = "-"
+minusBtn.BackgroundColor3 = Color3.fromRGB(30,30,40)
+minusBtn.TextColor3 = Color3.new(1,1,1)
+minusBtn.Font = Enum.Font.GothamBold
+minusBtn.TextScaled = true
+Instance.new("UICorner", minusBtn)
+
+local plusBtn = Instance.new("TextButton", frame)
+plusBtn.Size = UDim2.new(0.2,0,0,40)
+plusBtn.Position = UDim2.new(0.7,0,0.65,0)
+plusBtn.Text = "+"
+plusBtn.BackgroundColor3 = Color3.fromRGB(30,30,40)
+plusBtn.TextColor3 = Color3.new(1,1,1)
+plusBtn.Font = Enum.Font.GothamBold
+plusBtn.TextScaled = true
+Instance.new("UICorner", plusBtn)
+
+local sizeLabel = Instance.new("TextLabel", frame)
+sizeLabel.Size = UDim2.new(0.4,0,0,40)
+sizeLabel.Position = UDim2.new(0.3,0,0.65,0)
+sizeLabel.BackgroundTransparency = 1
+sizeLabel.TextColor3 = Color3.fromRGB(200,200,255)
+sizeLabel.Font = Enum.Font.GothamBold
+sizeLabel.TextScaled = true
+
+-- SIZE
+local currentSize = player:GetAttribute("GUI_SIZE") or 100
+local function updateSize()
+	currentSize = math.clamp(currentSize,1,100)
+	sizeLabel.Text = currentSize.."%"
+	frame.Size = UDim2.new(0, 330*(currentSize/100), 0, 280*(currentSize/100))
+	player:SetAttribute("GUI_SIZE", currentSize)
+end
+updateSize()
+
+plusBtn.MouseButton1Click:Connect(function()
+	currentSize += 5
+	updateSize()
+end)
+minusBtn.MouseButton1Click:Connect(function()
+	currentSize -= 5
+	updateSize()
+end)
+
+-- حفظ مكان GUI
+RunService.RenderStepped:Connect(function()
+	local pos = frame.Position
+	player:SetAttribute("GUI_POS_X", pos.X.Scale)
+	player:SetAttribute("GUI_POS_Y", pos.Y.Scale)
+	player:SetAttribute("GUI_POS_OFFX", pos.X.Offset)
+	player:SetAttribute("GUI_POS_OFFY", pos.Y.Offset)
+end)
+
+-- DROP
+local function instantDrop()
+	local origin = hrp.Position
+	local direction = Vector3.new(0,-500,0)
+
+	local params = RaycastParams.new()
+	params.FilterDescendantsInstances = {char}
+	params.FilterType = Enum.RaycastFilterType.Blacklist
+
+	local result = workspace:Raycast(origin, direction, params)
+
+	if result then
+		hrp.CFrame = CFrame.new(result.Position + Vector3.new(0,3.5,0))
+	else
+		hrp.CFrame += Vector3.new(0,-100,0)
+	end
+end
+
+dropBtn.MouseButton1Click:Connect(instantDrop)
+UIS.InputBegan:Connect(function(input,g)
+	if not g and input.KeyCode == Enum.KeyCode.F then
+		instantDrop()
+	end
+end)
+
+player.CharacterAdded:Connect(function(c)
+	char = c
+	hrp = char:WaitForChild("HumanoidRootPart")
+end)
